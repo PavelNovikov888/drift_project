@@ -1,0 +1,5 @@
+sudo service grafana-server status
+sudo service grafana-server start
+sudo service grafana-server stop
+sudo netstat -tulpn | grep :3000
+sudo kill -9 <номер процесса>

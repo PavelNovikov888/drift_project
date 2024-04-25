@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  grafana:
+    image: grafana/grafana:latest
+    restart: always
+    hostname: graf
+    volumes:
+      - /home/user/drift_project/grafana/grafana.ini:/etc/grafana/grafana.ini
+    ports:
+      - "3000:3000"
+    networks:
+      - monitoring     
+
+  prometheus:
+    image: prom/prometheus
+    restart: always
+    hostname: prom
+    volumes:
+      - /home/user/drift_project/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml # Указываем путь к файлу конфигурации Prometheus
+    ports:
+      - "9090:9090"
+    depends_on:
+      - grafana
+    networks:
+      - monitoring
+
+  drift_container:
+    image: pavelnovikov/drift_image:latest # Имя образа для drift_container
+    restart: always
+    hostname: drift
+    ports:
+      - "8000:8000"
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    driver: bridge
